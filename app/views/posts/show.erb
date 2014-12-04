@@ -1,0 +1,62 @@
+<a href="/"><header class="vs-header">
+  <div id="small-header" class="small-header">
+    <!-- <canvas id="demo-canvas"></canvas> -->
+    <h1 class="small-title">SNOT | TONS</h1>
+  </div>
+</header></a>
+
+
+
+<div class='wrapper'>
+
+  <div class="tags">
+    <%tags=[]%>
+    <%PostTag.where(post_id: @post.id).each do |pt|%>
+    <%tag = Tag.where(id: pt.tag_id)%>
+    <%tag.each do |tag|%>
+      <%tags << tag.name%>
+    <%end%>
+
+    <%end%>
+    <h6>tags: <%=tags.join(", ")%></h6>
+
+  </div>
+
+  <h2><%=@post.title%></h2>
+
+  <%author= User.find_by(id: @post.user_id)%>
+    <a href='/user/<%=author.id%>'><h4>by <%=author.name%></h4></a><br>
+    <%if current_user%>
+      <a href='/post/<%=@post.id%>/edit'><button type="button">Edit</button></a>
+    <%end%><br><br>
+
+  <%=@post.content%><br>
+
+  <h4>Additional Resources</h4>
+  <ol class= "resources">
+  <%resources= Resource.where(post_id: @post.id)%>
+    <%resources.each do |resource|%>
+      <%if (/([a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i =~resource.resource_url).nil?%>
+
+      <li><a href="<%=resource.resource_url%>"><%=resource.title%><br></a></li>
+
+      <%else%>
+
+      <li><img class="img" src="<%=resource.resource_url%>" alt="<%=resource.title%>"></li>
+
+      <%end%>
+    <%end%>
+  </ol>
+  <br>
+
+<div class="panel">
+    <h3>Add Resource</h3>
+      <form action="/post/<%=@post.id%>/resource" method="POST">
+
+        <input name='resource[title]' type = 'text' placeholder='Resource Description'>
+
+        <input name='resource[resource_url]' type = 'text' placeholder='Resource URL'>
+        <input type='submit' value='Add Entry'>
+      </form>
+  </div>
+</div>
